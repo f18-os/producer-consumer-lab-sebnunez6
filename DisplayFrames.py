@@ -19,14 +19,13 @@ class displayFrames(threading.Thread):
         count = 0
 
         startTime = time.time()
-
-        
+     
         frame = ""
         while frame is not None:
             self.lock.acquire()
-            if(len(self.q2) > 0):
+            if(len(self.q2) > 0):#checking if queue is empty
                 count = self.q2.pop(0)
-                if count == -1:
+                if count == -1:#means end sequence has started
                     break
             else:
                 self.lock.release()
@@ -37,15 +36,18 @@ class displayFrames(threading.Thread):
 
             # load the frame
             frame = cv2.imread(frameFileName)
-            
-            print("Displaying frame {}".format(count))
-            # Display the frame in a window called "Video"
-            cv2.imshow("Video", frame)
 
             # compute the amount of time that has elapsed
             # while the frame was processed
-            elapsedTime = int((time.time() - startTime) * 1000)
+            diff = 0.0417 + startTime
+            if diff - time.time() > 0:  #ensuring that the time duration is 24 fps
+                time.sleep(diff-time.time())
+            elapsedTime = int((time.time() - startTime)*1000)
             print("Time to process frame {} ms".format(elapsedTime))
+
+            print("Displaying frame {}".format(count))
+            # Display the frame in a window called "Video"
+            cv2.imshow("Video", frame)
             
             # determine the amount of time to wait, also
             # make sure we don't go into negative time

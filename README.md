@@ -44,5 +44,24 @@ them in sequence
 
 Note: You may have ancillary objects and method in order to make you're code easer to understand and implement.
 
+##Extract frames
+class was turned into a thread with freudenthal's code. Mutex 
+is used to lock and release when adding to a queue that will tell the ConvertToGrayscale which frame to
+convert. If the queue is full it will wait until resources have been used. Once
+it is done extracting frames it will queue -1 to signify the end of the video.
 
+##DisplayFrames
+Class was turned into a thread with freudenthal's code. Mutex is used 
+to lock and release when receiving frames from the queue provided by
+ConvertToGrayscale. If the queue is empty the code will loop until input is received.
+If the end sequence is received the thread will finish running.
 
+##ConvertToGrayscale
+Class was turned into a thread with freudenthal's code. Mutex 
+is used to lock and release when adding to a queue that will tell the Display
+which frame to display. If the queue is full it will wait until resources  in the queue have been used. 
+It receives frames while utilizing mutex from the frames queue and will run until the end sequence is received. If 
+nothing is in the queue it will loop around until input is received. 
+
+##theAllMighty
+Class calls all the threads

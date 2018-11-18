@@ -4,7 +4,7 @@ import cv2
 import threading
 import os
 import time
-class ExtractFrames(threading.Thread):
+class ExtractFrames(threading.Thread):#creating thread class
 	def __init__(self, lock, q1= []):
 		threading.Thread.__init__(self)
 		self.lock = lock
@@ -33,12 +33,11 @@ class ExtractFrames(threading.Thread):
 		  success,image = vidcap.read()
 		  print('Reading frame {}'.format(count))
 		  self.lock.acquire()
-		  while len(self.q1) > 10:
-		  	print("here3")
+		  while len(self.q1) > 10: #Checking if size of queue has exceeded
 		  	self.lock.release()
 		  	time.sleep(.100) #gives other threads time to catch up
 		  	self.lock.acquire()
-		  self.q1.append(count)
-		  self.lock.release()
+		  self.q1.append(count)#adds frame to queue
+		  self.lock.release() 
 		  count += 1
-		self.q1.append(-1)
+		self.q1.append(-1)#starts end sequence
