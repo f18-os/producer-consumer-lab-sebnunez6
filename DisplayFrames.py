@@ -23,6 +23,15 @@ class displayFrames(threading.Thread):
         
         frame = ""
         while frame is not None:
+            self.lock.acquire()
+            if(len(self.q2) > 0):
+                count = self.q2.pop(0)
+                if count == -1:
+                    break
+            else:
+                self.lock.release()
+                continue
+            self.lock.release()
             # Generate the filename for the first frame 
             frameFileName = "{}/grayscale_{:04d}.jpg".format(outputDir, count)
 
@@ -48,13 +57,7 @@ class displayFrames(threading.Thread):
 
             # get the start time for processing the next frame
             startTime = time.time()
-            
-            # get the next frame filename
-            count += 1
-            frameFileName = "{}/grayscale_{:04d}.jpg".format(outputDir, count)
 
-            # Read the next frame file
-            frame = cv2.imread(frameFileName)
 
         # make sure we cleanup the windows, otherwise we might end up with a mess
         cv2.destroyAllWindows()

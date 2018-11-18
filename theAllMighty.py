@@ -8,5 +8,7 @@ list1 = [] #list to convert to grayscales
 list2 = [] #list to display
 extractThread = ExtractFrames(lock,list1)
 ConvertToGrayscale = GrayScaleThread(lock,list1,list2)
+DisplayThread = displayFrames(lock,list2)
 extractThread.start()
 ConvertToGrayscale.start()
+DisplayThread.start()

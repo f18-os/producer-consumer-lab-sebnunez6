@@ -2,6 +2,8 @@
 
 import cv2
 import threading
+import time
+
 
 class GrayScaleThread(threading.Thread):
     def __init__(self, lock, q1= [],q2=[]):
@@ -18,7 +20,6 @@ class GrayScaleThread(threading.Thread):
         inputFrame = ""
 
         while inputFrame is not None:
-
             self.lock.acquire()
             if(len(self.q1) > 0):
                 count = self.q1.pop(0)
@@ -29,6 +30,7 @@ class GrayScaleThread(threading.Thread):
                 self.q2.append(count)
                 if count == -1:
                     self.q2.append(-1)
+                    self.lock.release()
                     break
             else:
                 self.lock.release()
@@ -51,11 +53,11 @@ class GrayScaleThread(threading.Thread):
             # write output file
             cv2.imwrite(outFileName, grayscaleFrame)
 
-            # generate input file name for the next frame
-            inFileName = "{}/frame_{:04d}.jpg".format(outputDir, count)
+            # # generate input file name for the next frame
+            # inFileName = "{}/frame_{:04d}.jpg".format(outputDir, count)
 
-            # load the next frame
-            inputFrame = cv2.imread(inFileName, cv2.IMREAD_COLOR)
+            # # load the next frame
+            # inputFrame = cv2.imread(inFileName, cv2.IMREAD_COLOR)
 
     
     

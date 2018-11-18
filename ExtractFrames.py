@@ -26,7 +26,6 @@ class ExtractFrames(threading.Thread):
 
 		# read one frame
 		success,image = vidcap.read()
-
 		print("Reading frame {} {} ".format(count, success))
 		while success:
 		  # write the current frame out as a jpeg image
@@ -35,6 +34,7 @@ class ExtractFrames(threading.Thread):
 		  print('Reading frame {}'.format(count))
 		  self.lock.acquire()
 		  while len(self.q1) > 10:
+		  	print("here3")
 		  	self.lock.release()
 		  	time.sleep(.100) #gives other threads time to catch up
 		  	self.lock.acquire()
