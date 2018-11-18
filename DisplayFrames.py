@@ -29,6 +29,7 @@ class displayFrames(threading.Thread):
                     break
             else:
                 self.lock.release()
+                time.sleep(.1)#give the other threads some time to produce
                 continue
             self.lock.release()
             # Generate the filename for the first frame 
