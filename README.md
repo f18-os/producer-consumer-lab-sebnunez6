@@ -65,3 +65,10 @@ nothing is in the queue it will loop around until input is received.
 
 ##theAllMighty
 Class calls all the threads
+
+#Semaphores
+I used the lists I created as semaphores to determine when i should use mutex and when i shouldn't
+use mutex. My lists were used to control what elements should be accessed and when they should be
+accessed based on the current size of my list. If the list was too big then i would wait and have 
+one of the other threads consume the resources before I produced more and vice versa. However because they were lists
+I could also use them to pass the information from one thread to another because they are pass by reference.
