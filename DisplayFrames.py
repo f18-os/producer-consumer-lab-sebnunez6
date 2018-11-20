@@ -6,9 +6,11 @@ import threading
 import time
 
 class displayFrames(threading.Thread):
-    def __init__(self, lock, q2=[]):
+    def __init__(self, lock, semaphore, semaphore2, q2=[]):
         threading.Thread.__init__(self)
         self.lock = lock
+        self.semaphore = semaphore
+        self.semaphore2 = semaphore2
         self.q2 = q2
     def run(self):
         # globals
@@ -22,16 +24,14 @@ class displayFrames(threading.Thread):
      
         frame = ""
         while frame is not None:
+            self.semaphore.acquire()#Checking if queue is empty
             self.lock.acquire()
-            if(len(self.q2) > 0):#checking if queue is empty
-                count = self.q2.pop(0)
-                if count == -1:#means end sequence has started
-                    break
-            else:
-                self.lock.release()
-                time.sleep(.1)#give the other threads some time to produce
-                continue
+            count = self.q2.pop(0)#Read from queue
             self.lock.release()
+            self.semaphore2.release()#Ensuring queue won't be full
+
+            if count == -1:#means end sequence has started
+                break
             # Generate the filename for the first frame 
             frameFileName = "{}/grayscale_{:04d}.jpg".format(outputDir, count)
 

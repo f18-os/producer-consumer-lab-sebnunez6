@@ -45,30 +45,31 @@ them in sequence
 Note: You may have ancillary objects and method in order to make you're code easer to understand and implement.
 
 ##Extract frames
-class was turned into a thread with freudenthal's code. Mutex 
+class was turned into a thread with freudenthal's code. Threading 
 is used to lock and release when adding to a queue that will tell the ConvertToGrayscale which frame to
-convert. If the queue is full it will wait until resources have been used. Once
+convert. If the queue is full it will sleep until resources have been used. Once
 it is done extracting frames it will queue -1 to signify the end of the video.
 
 ##DisplayFrames
-Class was turned into a thread with freudenthal's code. Mutex is used 
+Class was turned into a thread with freudenthal's code. Threading is used 
 to lock and release when receiving frames from the queue provided by
-ConvertToGrayscale. If the queue is empty the code will loop until input is received.
+ConvertToGrayscale. If the queue is empty the code will sleep until it is no longer empty.
 If the end sequence is received the thread will finish running.
 
 ##ConvertToGrayscale
-Class was turned into a thread with freudenthal's code. Mutex 
+Class was turned into a thread with freudenthal's code. Threading 
 is used to lock and release when adding to a queue that will tell the Display
-which frame to display. If the queue is full it will wait until resources  in the queue have been used. 
+which frame to display. If the queue is full it will sleep until resources  in the queue have been used through semaphores. 
 It receives frames while utilizing mutex from the frames queue and will run until the end sequence is received. If 
-nothing is in the queue it will loop around until input is received. 
+nothing is in the queue the semaphores will put the thread to sleep.
 
 ##theAllMighty
 Class calls all the threads
 
-#Semaphores
-I used the lists I created as semaphores to determine when i should use mutex and when i shouldn't
-use mutex. My lists were used to control what elements should be accessed and when they should be
-accessed based on the current size of my list. If the list was too big then i would wait and have 
-one of the other threads consume the resources before I produced more and vice versa. However because they were lists
-I could also use them to pass the information from one thread to another because they are pass by reference.
+#Semaphores in each thread
+Two semaphores are used for each list. The first and third semaphore are to tell if the queues is empty. 
+The second and fourth semaphore are to tell if the queues are full. Everytime I release one semaphore I 
+acquire the other to signify I am adding or removing an element from the queue. Every time I append to a list
+I release the first and third semaphore to signify something is being put in and acquire the second and
+fourth semaphores to signify that there is less empty space. When I pop an element from the list I 
+perform the opposite action on the semaphores to ensure the list does not overflow or is empty.
